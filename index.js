@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -36,6 +36,13 @@ async function run() {
       const email = req.params.email;
       const query = { email: email };
       const result = await toDoCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.delete("/to-do-list-remove/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await toDoCollection.deleteOne(query);
       res.send(result);
     });
 
