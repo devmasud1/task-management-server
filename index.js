@@ -22,11 +22,20 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    // await client.connect();
+
     const toDoCollection = client.db("toDoDB").collection("toDo");
 
     app.post("/to-do", async (req, res) => {
       const toDoInfo = req.body;
-      const result = await reviewsCollection.insertOne(toDoInfo);
+      const result = await toDoCollection.insertOne(toDoInfo);
+      res.send(result);
+    });
+
+    app.get("/to-do-list/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await toDoCollection.find(query).toArray();
       res.send(result);
     });
 
@@ -36,7 +45,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
